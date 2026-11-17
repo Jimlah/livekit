@@ -1,28 +1,28 @@
-# `smarthealth-livekit`
+# `livekit`
 
 A headless, framework-agnostic LiveKit teleconferencing and multimodal AI package built on [`@ui-sdk/core`](https://ui-sdk.dev), [`@ui-sdk/react`](https://ui-sdk.dev), [`livekit-client`](https://www.npmjs.com/package/livekit-client), and [`ai`](https://ai-sdk.dev).
 
 It provides three composable layers:
 
-1. **Headless `conference` Primitive (`smarthealth-livekit`)** — Wraps LiveKit's `Room` lifecycle, adaptive streaming, dynacast, active speaker detection, screen-share spotlighting, and echo-safe track attachment into 11 typed `@ui-sdk/core` slots.
+1. **Headless `conference` Primitive (`livekit`)** — Wraps LiveKit's `Room` lifecycle, adaptive streaming, dynacast, active speaker detection, screen-share spotlighting, and echo-safe track attachment into 11 typed `@ui-sdk/core` slots.
 2. **Imperative Controller (`callController` / `createConferenceController`)** — Decouples the LiveKit room runtime from any React component tree so calls can be started, muted, or ended from anywhere in plain JS/TS (button handlers, keyboard shortcuts, router guards, WebSocket events).
-3. **Compound React Components (`smarthealth-livekit/react`) & AI Chat Transport (`smarthealth-livekit/ai`)** — Declarative `<Conference.*>` compound components, `<ConferenceControllerRoot>` for global call overlays, and `LiveKitChatTransport` + `syncRoomTranscriptions` for `@ai-sdk/react`'s `useChat`.
+3. **Compound React Components (`livekit/react`) & AI Chat Transport (`livekit/ai`)** — Declarative `<Conference.*>` compound components, `<ConferenceControllerRoot>` for global call overlays, and `LiveKitChatTransport` + `syncRoomTranscriptions` for `@ai-sdk/react`'s `useChat`.
 
 ---
 
 ## Installation
 
 ```bash
-npm install smarthealth-livekit livekit-client @ui-sdk/core
+npm install github:Jimlah/livekit livekit-client @ui-sdk/core
 ```
 
 Depending on which entrypoints you use, install the optional peer dependencies:
 
 ```bash
-# For React compound components & global call overlay (smarthealth-livekit/react)
+# For React compound components & global call overlay (livekit/react)
 npm install react @ui-sdk/react
 
-# For AI chat & voice transcription sync (smarthealth-livekit/ai)
+# For AI chat & voice transcription sync (livekit/ai)
 npm install ai @ai-sdk/react
 ```
 
@@ -30,19 +30,19 @@ npm install ai @ai-sdk/react
 
 | Import Path | Contents |
 | :--- | :--- |
-| `smarthealth-livekit` | `conference` primitive, `callController`, `createConferenceController`, and TypeScript types |
-| `smarthealth-livekit/react` | `Conference` compound components, `ConferenceControllerRoot`, `useConferenceController` |
-| `smarthealth-livekit/ai` | `LiveKitChatTransport`, `syncRoomTranscriptions` |
+| `livekit` | `conference` primitive, `callController`, `createConferenceController`, and TypeScript types |
+| `livekit/react` | `Conference` compound components, `ConferenceControllerRoot`, `useConferenceController` |
+| `livekit/ai` | `LiveKitChatTransport`, `syncRoomTranscriptions` |
 
 ---
 
 ## 1. Compound Component Usage (React)
 
-Use `Conference` from `smarthealth-livekit/react` for declarative teleconferencing UIs with zero `useEffect` or LiveKit event listeners in your components:
+Use `Conference` from `livekit/react` for declarative teleconferencing UIs with zero `useEffect` or LiveKit event listeners in your components:
 
 ```tsx
 import { Track } from "livekit-client";
-import { Conference } from "smarthealth-livekit/react";
+import { Conference } from "livekit/react";
 
 export function VideoCallRoom({
   serverUrl,
@@ -147,7 +147,7 @@ When you want to trigger or control a call from outside the UI tree—inside an 
 
 ```ts
 // lib/call-client.ts
-import { callController } from "smarthealth-livekit";
+import { callController } from "livekit";
 
 callController.configure({
   serverUrl: import.meta.env.VITE_LIVEKIT_URL,
@@ -157,7 +157,7 @@ callController.configure({
 
 ```ts
 // features/appointment/start-consultation.ts
-import { callController } from "smarthealth-livekit";
+import { callController } from "livekit";
 
 export async function handleJoinConsultation(appointmentId: string) {
   const res = await fetch(`/api/consultations/${appointmentId}/token`, {
@@ -185,12 +185,12 @@ Mount `<GlobalCallOverlay />` once at the root of your React app using `useConfe
 ```tsx
 // components/GlobalCallOverlay.tsx
 import { ConnectionState, Track } from "livekit-client";
-import { callController } from "smarthealth-livekit";
+import { callController } from "livekit";
 import {
   Conference,
   ConferenceControllerRoot,
   useConferenceController,
-} from "smarthealth-livekit/react";
+} from "livekit/react";
 
 export function GlobalCallOverlay() {
   const state = useConferenceController(callController);
@@ -265,7 +265,7 @@ export function GlobalCallOverlay() {
 Use `conference` directly without any UI framework:
 
 ```ts
-import { conference } from "smarthealth-livekit";
+import { conference } from "livekit";
 
 const call = conference({
   id: "main-call",
@@ -288,7 +288,7 @@ const unsubscribe = call.subscribe(() => {
 
 ---
 
-## 4. AI Chat & Transcription Integration (`smarthealth-livekit/ai`)
+## 4. AI Chat & Transcription Integration (`livekit/ai`)
 
 Connect LiveKit's reliable data channels and real-time voice transcriptions to `@ai-sdk/react`'s `useChat`:
 
@@ -301,7 +301,7 @@ import { useChat } from "@ai-sdk/react";
 import {
   LiveKitChatTransport,
   syncRoomTranscriptions,
-} from "smarthealth-livekit/ai";
+} from "livekit/ai";
 
 export function VoiceAndChatAgent({
   token,
