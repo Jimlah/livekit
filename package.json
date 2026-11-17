@@ -1,0 +1,70 @@
+{
+  "name": "smarthealth-livekit",
+  "version": "0.1.0",
+  "description": "Headless LiveKit teleconferencing primitives (@ui-sdk/core & @ui-sdk/react), imperative CallSDK controller, and Vercel AI SDK ChatTransport.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js",
+      "require": "./dist/react.cjs"
+    },
+    "./ai": {
+      "types": "./dist/ai.d.ts",
+      "import": "./dist/ai.js",
+      "require": "./dist/ai.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "@ai-sdk/react": "^4.0.0",
+    "@ui-sdk/core": "^0.1.0-beta.6",
+    "@ui-sdk/react": "^0.1.0-beta.6",
+    "ai": "^7.0.0",
+    "livekit-client": "^2.24.0",
+    "react": "^18.0.0 || ^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@ai-sdk/react": {
+      "optional": true
+    },
+    "@ui-sdk/react": {
+      "optional": true
+    },
+    "ai": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@ai-sdk/react": "^4.0.177",
+    "@types/react": "^19.0.0",
+    "@ui-sdk/core": "^0.1.0-beta.6",
+    "@ui-sdk/react": "^0.1.0-beta.6",
+    "ai": "^7.0.173",
+    "livekit-client": "^2.24.1",
+    "react": "^19.0.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.0.0"
+  },
+  "license": "MIT"
+}
