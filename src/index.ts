@@ -8,7 +8,7 @@ export {
 } from "./conference.js";
 
 export {
-  CallSDK,
+  callController,
   createConferenceController,
   type ConferenceController,
   type ConferenceControllerOptions,

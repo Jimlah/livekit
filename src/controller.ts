@@ -37,8 +37,7 @@ let controllerCounter = 0;
  *
  * Decouples the LiveKit `Room` lifecycle from any specific UI component tree so calls
  * can be started, controlled, and ended from anywhere in your application (e.g. button
- * handlers, keyboard shortcuts, router guards, or WebSocket events), just like a
- * payment SDK (`stripe.confirmPayment()`, `paystack.newTransaction()`).
+ * handlers, keyboard shortcuts, router guards, or WebSocket events).
  */
 export function createConferenceController(
   defaultOptions: ConferenceControllerOptions = {}
@@ -90,8 +89,8 @@ export function createConferenceController(
  * Default singleton teleconference controller for imperative call management
  * anywhere in your application.
  */
-export const CallSDK: ConferenceController = createConferenceController({
-  id: "smarthealth-call-sdk",
+export const callController: ConferenceController = createConferenceController({
+  id: "smarthealth-call-controller",
   autoConnect: false,
   autoEnableMedia: true,
 });

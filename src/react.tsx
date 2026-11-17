@@ -31,7 +31,7 @@ export const Conference = createParts(conference, {
 });
 
 /**
- * Subscribes a React component to an external `ConferenceController` (such as `CallSDK`)
+ * Subscribes a React component to an external `ConferenceController` (such as `callController`)
  * and returns the latest reactive `ConferenceState`.
  */
 export function useConferenceController(
@@ -48,12 +48,12 @@ export type ConferenceControllerRootProps = PartProps<
   "div",
   { connectionState: ConnectionState; hasScreenShare: boolean }
 > & {
-  /** External `ConferenceController` (such as `CallSDK`) to bind to this UI tree. */
+  /** External `ConferenceController` (such as `callController`) to bind to this UI tree. */
   controller: ConferenceController;
 };
 
 /**
- * Binds an external `ConferenceController` (such as `CallSDK`) to the `root` slot
+ * Binds an external `ConferenceController` (such as `callController`) to the `root` slot
  * so all nested `Conference.*` compound components (`Conference.Grid`,
  * `Conference.Video`, `Conference.MicTrigger`, etc.) operate on the controller's live room.
  */

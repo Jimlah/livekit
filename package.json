@@ -1,7 +1,7 @@
 {
   "name": "smarthealth-livekit",
   "version": "0.1.0",
-  "description": "Headless LiveKit teleconferencing primitives (@ui-sdk/core & @ui-sdk/react), imperative CallSDK controller, and Vercel AI SDK ChatTransport.",
+  "description": "Headless LiveKit teleconferencing primitives (@ui-sdk/core & @ui-sdk/react), imperative callController, and ChatTransport for ai.",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

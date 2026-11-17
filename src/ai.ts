@@ -13,7 +13,7 @@ interface IncomingDataEvent {
 }
 
 /**
- * Custom Vercel AI SDK `ChatTransport` that routes `useChat` messages over a
+ * Custom `ChatTransport` (`ai`) that routes `useChat` messages over a
  * LiveKit `Room` reliable data channel instead of HTTP `fetch`.
  */
 export class LiveKitChatTransport implements ChatTransport<UIMessage> {
@@ -125,7 +125,7 @@ export class LiveKitChatTransport implements ChatTransport<UIMessage> {
 
 /**
  * Subscribes to LiveKit `RoomEvent.TranscriptionReceived` and converts finalized
- * voice transcription segments into Vercel AI SDK `UIMessage` objects.
+ * voice transcription segments into `UIMessage` objects.
  *
  * Returns an unsubscribe function to detach the listener.
  */

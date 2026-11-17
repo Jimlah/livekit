@@ -1,12 +1,12 @@
 # `smarthealth-livekit`
 
-A headless, framework-agnostic LiveKit teleconferencing and multimodal AI SDK package built on [`@ui-sdk/core`](https://ui-sdk.dev), [`@ui-sdk/react`](https://ui-sdk.dev), [`livekit-client`](https://www.npmjs.com/package/livekit-client), and the [Vercel AI SDK](https://ai-sdk.dev).
+A headless, framework-agnostic LiveKit teleconferencing and multimodal AI package built on [`@ui-sdk/core`](https://ui-sdk.dev), [`@ui-sdk/react`](https://ui-sdk.dev), [`livekit-client`](https://www.npmjs.com/package/livekit-client), and [`ai`](https://ai-sdk.dev).
 
 It provides three composable layers:
 
 1. **Headless `conference` Primitive (`smarthealth-livekit`)** — Wraps LiveKit's `Room` lifecycle, adaptive streaming, dynacast, active speaker detection, screen-share spotlighting, and echo-safe track attachment into 11 typed `@ui-sdk/core` slots.
-2. **Imperative Controller (`CallSDK` / `createConferenceController`)** — Decouples the LiveKit room runtime from any React component tree so calls can be started, muted, or ended from anywhere in plain JS/TS (button handlers, keyboard shortcuts, router guards, WebSocket events), just like payment SDKs (`stripe.confirmPayment()`).
-3. **Compound React Components (`smarthealth-livekit/react`) & AI SDK Transport (`smarthealth-livekit/ai`)** — Declarative `<Conference.*>` compound components, `<ConferenceControllerRoot>` for global call overlays, and `LiveKitChatTransport` + `syncRoomTranscriptions` for `@ai-sdk/react`'s `useChat`.
+2. **Imperative Controller (`callController` / `createConferenceController`)** — Decouples the LiveKit room runtime from any React component tree so calls can be started, muted, or ended from anywhere in plain JS/TS (button handlers, keyboard shortcuts, router guards, WebSocket events).
+3. **Compound React Components (`smarthealth-livekit/react`) & AI Chat Transport (`smarthealth-livekit/ai`)** — Declarative `<Conference.*>` compound components, `<ConferenceControllerRoot>` for global call overlays, and `LiveKitChatTransport` + `syncRoomTranscriptions` for `@ai-sdk/react`'s `useChat`.
 
 ---
 
@@ -22,7 +22,7 @@ Depending on which entrypoints you use, install the optional peer dependencies:
 # For React compound components & global call overlay (smarthealth-livekit/react)
 npm install react @ui-sdk/react
 
-# For Vercel AI SDK chat & voice transcription sync (smarthealth-livekit/ai)
+# For AI chat & voice transcription sync (smarthealth-livekit/ai)
 npm install ai @ai-sdk/react
 ```
 
@@ -30,7 +30,7 @@ npm install ai @ai-sdk/react
 
 | Import Path | Contents |
 | :--- | :--- |
-| `smarthealth-livekit` | `conference` primitive, `CallSDK`, `createConferenceController`, and TypeScript types |
+| `smarthealth-livekit` | `conference` primitive, `callController`, `createConferenceController`, and TypeScript types |
 | `smarthealth-livekit/react` | `Conference` compound components, `ConferenceControllerRoot`, `useConferenceController` |
 | `smarthealth-livekit/ai` | `LiveKitChatTransport`, `syncRoomTranscriptions` |
 
@@ -139,17 +139,17 @@ Inside `<Conference.Grid>`, map over participants (from `useConferenceController
 
 ---
 
-## 2. Imperative Controller Pattern (`CallSDK`)
+## 2. Imperative Controller Pattern (`callController`)
 
-When you want to trigger or control a call from outside the UI tree—inside an event handler, router guard, WebSocket message, or global keyboard shortcut—use `CallSDK` (or create an isolated controller with `createConferenceController()`).
+When you want to trigger or control a call from outside the UI tree—inside an event handler, router guard, WebSocket message, or global keyboard shortcut—use `callController` (or create an isolated controller with `createConferenceController()`).
 
 ### Configure Once & Trigger From Anywhere in JS/TS
 
 ```ts
 // lib/call-client.ts
-import { CallSDK } from "smarthealth-livekit";
+import { callController } from "smarthealth-livekit";
 
-CallSDK.configure({
+callController.configure({
   serverUrl: import.meta.env.VITE_LIVEKIT_URL,
   autoEnableMedia: true,
 });
@@ -157,7 +157,7 @@ CallSDK.configure({
 
 ```ts
 // features/appointment/start-consultation.ts
-import { CallSDK } from "smarthealth-livekit";
+import { callController } from "smarthealth-livekit";
 
 export async function handleJoinConsultation(appointmentId: string) {
   const res = await fetch(`/api/consultations/${appointmentId}/token`, {
@@ -166,14 +166,14 @@ export async function handleJoinConsultation(appointmentId: string) {
   const { token, serverUrl } = await res.json();
 
   // Launch the teleconference imperatively from anywhere
-  await CallSDK.start(token, serverUrl);
+  await callController.start(token, serverUrl);
 }
 
 // Bind a global keyboard shortcut
 window.addEventListener("keydown", (e) => {
   if (e.metaKey && e.key.toLowerCase() === "d") {
     e.preventDefault();
-    void CallSDK.toggleMic();
+    void callController.toggleMic();
   }
 });
 ```
@@ -185,7 +185,7 @@ Mount `<GlobalCallOverlay />` once at the root of your React app using `useConfe
 ```tsx
 // components/GlobalCallOverlay.tsx
 import { ConnectionState, Track } from "livekit-client";
-import { CallSDK } from "smarthealth-livekit";
+import { callController } from "smarthealth-livekit";
 import {
   Conference,
   ConferenceControllerRoot,
@@ -193,7 +193,7 @@ import {
 } from "smarthealth-livekit/react";
 
 export function GlobalCallOverlay() {
-  const state = useConferenceController(CallSDK);
+  const state = useConferenceController(callController);
 
   if (state.connectionState === ConnectionState.Disconnected) {
     return null;
@@ -209,7 +209,7 @@ export function GlobalCallOverlay() {
 
   return (
     <div className="fixed inset-0 z-50 bg-zinc-950 text-white">
-      <ConferenceControllerRoot controller={CallSDK} className="flex flex-col h-full">
+      <ConferenceControllerRoot controller={callController} className="flex flex-col h-full">
         <div className="flex-1 flex gap-4 p-4 overflow-hidden">
           <Conference.Stage className="flex-1 bg-black rounded-xl overflow-hidden">
             {screenSharer && (
@@ -288,7 +288,7 @@ const unsubscribe = call.subscribe(() => {
 
 ---
 
-## 4. Vercel AI SDK Integration (`smarthealth-livekit/ai`)
+## 4. AI Chat & Transcription Integration (`smarthealth-livekit/ai`)
 
 Connect LiveKit's reliable data channels and real-time voice transcriptions to `@ai-sdk/react`'s `useChat`:
 
